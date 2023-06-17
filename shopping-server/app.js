@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 
 const productRouter = require("./routes/productRouter");
 const userRouter = require("./routes/userRouter");
@@ -7,6 +8,7 @@ const shoppingCartRouter = require("./routes/shoppingCartRouter");
 const app = express();
 
 app.use(express.json());
+app.use(express.cors());
 
 app.use("/api/products", productRouter);
 app.use("/api/login", userRouter);
