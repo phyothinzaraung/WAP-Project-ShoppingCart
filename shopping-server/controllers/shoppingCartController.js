@@ -14,3 +14,8 @@ exports.removeFromCart = (req, res, next) => {
     ShoppingCart.removeShoppingCart(req.body.userId, req.body.productId);
     res.status(204).end();
 }
+
+exports.placeOrder = (req, res, next) => {
+    ShoppingCart.placeOrder(req.body);
+    res.status(204).end();
+}
