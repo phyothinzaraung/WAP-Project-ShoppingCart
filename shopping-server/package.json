@@ -1,0 +1,14 @@
+{
+  "name": "shopping-server",
+  "version": "1.0.0",
+  "description": "Project for Web Application Programming Course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tin Tun Aung, Phyo Thinzar Aung, Myo Su Kyaw",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
