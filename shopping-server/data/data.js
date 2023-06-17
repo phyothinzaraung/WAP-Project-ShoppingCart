@@ -1,3 +1,8 @@
+const userDB = [
+    { username: 'user1', password: 'pass1' },
+    { username: 'user2', password: 'pass2' }
+];
+
 const productDB = [
     {id:'e33c9038-0d1f-11ee-be56-0242ac120002', name:'Node', price:'9.99', image:'', stock:'10'},
     {id:'ef84f6e6-0d1f-11ee-be56-0242ac120002', name:'Angular', price:'19.99', image:'', stock:'26'},
@@ -11,4 +16,4 @@ const productDB = [
     {id:'22edfe74-0d20-11ee-be56-0242ac120002', name:'Kotlin', price:'28.99', image:'', stock:'12'},
 ];
 
-module.exports = {productDB};
+module.exports = {productDB, userDB};
