@@ -6,5 +6,11 @@ exports.getShoppingCart = (req, res, next)=>{
 }
 
 exports.addToCart = (req, res, next) => {
-    const cart = new ShoppingCart()
+    const cart = ShoppingCart.addShoppingCart(req.body.userId, req.body.productId);
+    res.status(201).json(cart);
+}
+
+exports.removeFromCart = (req, res, next) => {
+    ShoppingCart.removeShoppingCart(req.body.userId, req.body.productId);
+    res.status(204).end();
 }
