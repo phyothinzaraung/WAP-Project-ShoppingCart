@@ -12,7 +12,12 @@ module.exports = class ShoppingCart{
     }
 
     static getShoppingCardByUserId(userId){
-        const carts = shoppingCarts.find(cart => cart.userId == userId);
+        const carts = shoppingCarts.filter(cart => cart.userId == userId);
         return carts;
+    }
+
+    addShoppingCart(){
+        shoppingCarts.push(this);
+        return this;
     }
 }
