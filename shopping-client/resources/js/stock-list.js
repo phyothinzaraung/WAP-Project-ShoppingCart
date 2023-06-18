@@ -1,5 +1,5 @@
 window.onload = function () {
-    document.getElementById("login").onclick = checkloign;
+    document.getElementById("loginBtn").onclick = checkloign;
     document.getElementById("orderlist").onclick = updatedOrderList;
 }
 
@@ -17,19 +17,31 @@ async function checkloign() {
         }
     });
     
-    if(response.status == 500){
+    const result = await response.json()
+    if(result.status){
         console.log("user is not match");
     }
     else{
-        const result = await response.json();
         sessionStorage.setItem('userId',result.id);
+        sessionStorage.setItem('username', result.username);
+        showAfterLogin();
         fetchStock();
         fetchShoppingCartData(result.id);
-
     }
-
-   
 }
+
+function showAfterLogin() {
+
+    document.getElementById('username').value = "";
+    document.getElementById('password').value = "";
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    document.getElementById('welcome-logout-content').style.display = 'block';
+    document.getElementById('welcome').innerText = `Welcome, ${sessionStorage.getItem('username')}`;
+    document.getElementById('welcome-content-div').style.display = 'none';
+    document.getElementById('err').innerText = "";
+}
+
 async function fetchStock() {
     let html = `
     <caption>Product List</caption>
@@ -47,7 +59,7 @@ async function fetchStock() {
         html += `<tr>
         <td>${stock.name}</td>
         <td>${stock.price}</td>
-        <td>${stock.image}</td>
+        <td><img src="http://localhost:3000/${stock.image}" width="30" height="30" ></td>
         <td>${stock.stock}</td>
         <td>
         <a href='#' onclick="addStock('${stock.id}')">Add</a>

@@ -5,22 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="./stock-list.js" type="text/javascript"></script>
-    <link href="./resources/stock-list.css" type="text/css" rel="stylesheet"></link>
+    <script src="./resources/js/stock-list.js" type="text/javascript"></script>
+    <link href="./resources/css/stock-list.css" type="text/css" rel="stylesheet"></link>
 </head>
 <body>
     <header>
-        <label>Username</label>
-        <input type="text" name="username" id="username" />
-        <label>Password</label>
-        <input type="password" name="password" id="password" />
-        <button id="login">Login</button>
+        <div class="logo">
+            <img src="./resources/images/shopping-cart.png" alt="Logo">
+            <strong>
+                <i>Shopping Cart</i>
+            </strong>
+        </div>
+        <div id="loginForm" class="login-form">
+            <input type="text" id="username" placeholder="username" />
+            <input type="password" id="password" placeholder="password" />
+            <button id="loginBtn">Login</button>
+            <div id="err"></div>
+        </div>
+        <div id="welcome-logout-content">
+            <b id="welcome"></b>
+            <button id="logoutBtn">Logout</button>
+        </div>
     </header>
-    
-    <table id="stock-list"></table>
-    
-    <table id="shoppingcart-list"></table>
-    <button id ="orderlist">Placed Order</button>
+    <div id="welcome-content-div">
+        <p id="welcome-content">Welcome to my store</p>
+    </div>
+    <div id="main-content">
+        <table id="stock-list"></table>
+        <table id="shoppingcart-list"></table>
+        <button id ="orderlist">Placed Order</button>
+    </div>
     
 </body>
 </html>
