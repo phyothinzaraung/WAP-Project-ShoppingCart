@@ -25,10 +25,12 @@ async function checkloign() {
     else{
         sessionStorage.setItem('userId',result.id);
         sessionStorage.setItem('username', result.username);
+        sessionStorage.setItem('my-token',result.accessToken);
         showAfterLogin();
         fetchStock();
         fetchShoppingCartData(result.id);
     }
+    console.log('access ')
 }
 
 function showAfterLogin() {
@@ -53,7 +55,13 @@ async function fetchStock() {
     <th>Stock</th>
     <th>Actions</th>
     </tr>`;
-    const response = await fetch("http://localhost:3000/api/products");
+    const response = await fetch("http://localhost:3000/api/products",
+    {
+        headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
+            'Content-type': 'application/json; charset=UTF-8',
+        }
+    });
     const stocklists = await response.json();
     console.log(stocklists);
     stocklists.forEach(stock =>
@@ -80,7 +88,13 @@ async function fetchShoppingCartData(userId) {
     <th>Total</th>
     <th>Quantity</th>
     </tr>`;
-    const response = await fetch(`http://localhost:3000/api/shopping-carts/${userId}`);
+    const response = await fetch(`http://localhost:3000/api/shopping-carts/${userId}`,
+    {
+        headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
+            'Content-type': 'application/json; charset=UTF-8',
+        }
+    });
     const shoppingcartlists = await response.json();
     console.log(shoppingcartlists);
     shoppingCart = shoppingcartlists;
@@ -129,6 +143,7 @@ async function updatedOrderList(){
         method: 'PUT',
         body: JSON.stringify(shoppingCart),
         headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
             'Content-type': 'application/json; charset=UTF-8',
         }
     });
@@ -155,6 +170,7 @@ async function addStock(stockId){
             
         }),
         headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
             'Content-type': 'application/json; charset=UTF-8',
         }
     });
@@ -173,6 +189,7 @@ async function delete_order(productId) {
         method: 'DELETE',
         body: JSON.stringify(obj),
         headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
             'Content-type': 'application/json; charset=UTF-8',
         }
     });
@@ -183,6 +200,6 @@ async function delete_order(productId) {
         console.log("Success");
     }
 
-    fetchShoppingCartData(sessionStorage.userId);q
+    fetchShoppingCartData(sessionStorage.userId);
     
 }
