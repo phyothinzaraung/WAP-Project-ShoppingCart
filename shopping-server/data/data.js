@@ -14,7 +14,7 @@ const productDB = [
     {id:'10c14b20-0d20-11ee-be56-0242ac120002', name:'C#', price:'29.99', image:'images/csharp.png', stock: 16 },
     {id:'15940778-0d20-11ee-be56-0242ac120002', name:'PHP', price:'30.99', image:'images/php.png', stock: 21},
     {id:'1ac9f75c-0d20-11ee-be56-0242ac120002', name:'Golang', price:'22.99', image:'images/golang.png', stock: 19},
-    {id:'1ed78ef4-0d20-11ee-be56-0242ac120002', name:'Javascipt', price:'30.99', image:'images/javascript.png', stock: 23},
+    {id:'1ed78ef4-0d20-11ee-be56-0242ac120002', name:'Javascript', price:'30.99', image:'images/javascript.png', stock: 23},
     {id:'22edfe74-0d20-11ee-be56-0242ac120002', name:'Kotlin', price:'28.99', image:'images/kotlin.jpg', stock: 12},
 ];
 
