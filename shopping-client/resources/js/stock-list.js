@@ -182,5 +182,7 @@ async function delete_order(productId) {
     else{
         console.log("Success");
     }
+
+    fetchShoppingCartData(sessionStorage.userId);q
     
 }
