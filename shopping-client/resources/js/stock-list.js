@@ -4,6 +4,7 @@ window.onload = function () {
 }
 
 let shoppingCart = [];
+let productId="";
 
 async function checkloign() {
     const response = await fetch("http://localhost:3000/api/login",{
@@ -83,16 +84,42 @@ async function fetchShoppingCartData(userId) {
     const shoppingcartlists = await response.json();
     console.log(shoppingcartlists);
     shoppingCart = shoppingcartlists;
+    // const incrementButton = document.querySelector('.increment')
+    // console.log("increasement",incrementButton);
     shoppingcartlists.forEach(list =>
         html += `<tr>
         <td>${list.name}</td>
         <td>${list.price}</td>
         <td>${list.price}</td>
-        <td>${list.quantity}</td>
+        <td><button onclick='increase_by_one("${list.productId}");'>+</button>
+        <input id="${list.productId}" type="text" value="${list.quantity}" name="qty" />
+        <button onclick='decrease_by_one("${list.productId}");'>-</button></td>
         </tr>`
+        
        );
+
     document.getElementById("shoppingcart-list").innerHTML = html;
 }
+
+
+
+function increase_by_one(field) {
+    const nr = parseInt(document.getElementById(field).value);
+    document.getElementById(field).value = nr + 1;
+   }
+    
+function decrease_by_one(field) {
+    const nr = parseInt(document.getElementById(field).value);
+    if (nr > 0) {
+        document.getElementById(field).value = nr - 1;
+        
+    }
+    if(nr==0){
+        delete_order(field);
+    }
+} 
+
+
 
 
 async function updatedOrderList(){
@@ -111,6 +138,7 @@ async function updatedOrderList(){
     else{
         console.log("Success");
     }
+    fetchStock();
 
 }
 
@@ -118,6 +146,7 @@ async function updatedOrderList(){
 async function addStock(stockId){
     console.log(`stockID ${stockId}`);
     console.log(sessionStorage.userId);
+    
     await fetch("http://localhost:3000/api/shopping-carts/add", {
         method: 'POST',
         body: JSON.stringify({
@@ -131,4 +160,27 @@ async function addStock(stockId){
     });
     fetchStock();
     fetchShoppingCartData(sessionStorage.userId);
+}
+
+async function delete_order(productId) {
+    const obj = {
+        "userId":sessionStorage.userId,
+        "productId":productId
+    }
+    console.log(obj);
+    console.log(JSON.stringify(obj));
+    const response = await fetch("http://localhost:3000/api/shopping-carts/remove",{
+        method: 'DELETE',
+        body: JSON.stringify(obj),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        }
+    });
+    if(response.status == 500){
+        console.log("Internal Server Error");
+    }
+    else{
+        console.log("Success");
+    }
+    
 }
