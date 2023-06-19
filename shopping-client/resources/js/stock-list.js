@@ -71,7 +71,9 @@ async function fetchStock() {
         <td><img src="http://localhost:3000/${stock.image}" width="30" height="30" ></td>
         <td>${stock.stock}</td>
         <td>
-        <a href='#' onclick="addStock('${stock.id}')">Add</a>
+            <button onclick="addStock('${stock.id}')">
+                <img src="ttp://localhost:3000/images/cart.png" />
+            </button>
         </td>
         </tr>`);
 
