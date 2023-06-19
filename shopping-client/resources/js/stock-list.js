@@ -223,8 +223,11 @@ async function updatedOrderList() {
     }
     else {
         console.log("Success");
+        fetchStock();
+        shoppingCart = [];
+        renderShoppingCartList();
     }
-    fetchStock();
+    
 
 }
 
