@@ -80,14 +80,6 @@ async function fetchStock() {
 
 async function fetchShoppingCartData(userId) {
     console.log(userId);
-    let html = `
-    <caption>Your Shopping Cart</caption>
-    <tr>
-    <th>Name</th>
-    <th>Price</th>
-    <th>Total</th>
-    <th>Quantity</th>
-    </tr>`;
     const response = await fetch(`http://localhost:3000/api/shopping-carts/${userId}`,
     {
         headers: {
@@ -98,9 +90,19 @@ async function fetchShoppingCartData(userId) {
     const shoppingcartlists = await response.json();
     console.log(shoppingcartlists);
     shoppingCart = shoppingcartlists;
-    // const incrementButton = document.querySelector('.increment')
-    // console.log("increasement",incrementButton);
-    shoppingcartlists.forEach(list =>
+    renderShoppingCartList();
+}
+
+function renderShoppingCartList() {
+    let html = `
+    <caption>Your Shopping Cart</caption>
+    <tr>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Total</th>
+    <th>Quantity</th>
+    </tr>`;
+    shoppingCart.forEach(list =>
         html += `<tr>
         <td>${list.name}</td>
         <td>${list.price}</td>
@@ -115,24 +117,34 @@ async function fetchShoppingCartData(userId) {
     document.getElementById("shoppingcart-list").innerHTML = html;
 }
 
-
-
 function increase_by_one(field) {
     const nr = parseInt(document.getElementById(field).value);
-    document.getElementById(field).value = nr + 1;
+    // const update_qty = nr+1;
+    // sessionStorage.setItem('update_qty',update_qty);
+    let index = shoppingCart.findIndex(prod => prod.productId == field);
+    shoppingCart[index].quantity = shoppingCart[index].quantity + 1; 
+    document.getElementById(field).value = shoppingCart[index].quantity;
    }
     
 function decrease_by_one(field) {
-    const nr = parseInt(document.getElementById(field).value);
-    if (nr > 0) {
-        document.getElementById(field).value = nr - 1;
+    // const nr = parseInt(document.getElementById(field).value);
+    let index = shoppingCart.findIndex(prod => prod.productId == field);
+    if ((parseInt(document.getElementById(field).value) - 1) > 0) {
+        // const update_qty = nr-1;
+        // sessionStorage.setItem('update_qty',update_qty);
+        shoppingCart[index].quantity = shoppingCart[index].quantity - 1; 
+        document.getElementById(field).value = shoppingCart[index].quantity;
         
     }
-    if(nr==0){
-        delete_order(field);
+    if((parseInt(document.getElementById(field).value) - 1) == 0){
+        if(index > -1) {
+            shoppingCart.splice(index, 1);
+            renderShoppingCartList();
+        }
+
+        // delete_order(field);
     }
 } 
-
 
 
 
@@ -174,7 +186,7 @@ async function addStock(stockId){
             'Content-type': 'application/json; charset=UTF-8',
         }
     });
-    fetchStock();
+    // fetchStock();
     fetchShoppingCartData(sessionStorage.userId);
 }
 
@@ -201,5 +213,6 @@ async function delete_order(productId) {
     }
 
     fetchShoppingCartData(sessionStorage.userId);
+    console.log("update qty",sessionStorage.update_qty);
     
 }
