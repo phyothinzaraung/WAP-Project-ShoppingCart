@@ -6,7 +6,7 @@ const userDB = [
 ];
 
 const productDB = [
-    {id:'e33c9038-0d1f-11ee-be56-0242ac120002', name:'Node', price:'9.99', image: 'images/angular.png', stock: 10},
+    {id:'e33c9038-0d1f-11ee-be56-0242ac120002', name:'Node', price:'9.99', image: 'images/nodejs.png', stock: 10},
     {id:'ef84f6e6-0d1f-11ee-be56-0242ac120002', name:'Angular', price:'19.99', image:'images/angular.png', stock: 26 },
     {id:'f8a7f002-0d1f-11ee-be56-0242ac120002', name:'React', price:'12.99', image:'images/react.png', stock: 30},
     {id:'fddb3b7e-0d1f-11ee-be56-0242ac120002', name:'Python', price:'20.99', image:'images/python.png', stock: 18},
