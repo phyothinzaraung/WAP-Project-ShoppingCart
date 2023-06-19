@@ -198,3 +198,8 @@ caption{
   position: relative;
   padding-top: 10px;
 }
+
+.right-align {
+  text-align: right;
+  padding-right: 10%;
+}

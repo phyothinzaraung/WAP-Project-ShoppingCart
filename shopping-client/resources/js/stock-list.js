@@ -1,13 +1,42 @@
 window.onload = function () {
     document.getElementById("loginBtn").onclick = checkloign;
     document.getElementById("placeOrderBtn").onclick = updatedOrderList;
+    document.getElementById("logoutBtn").onclick = logout;
 }
 
 let shoppingCart = [];
-let productId="";
+let productId = "";
+
+async function logout() {
+    const response = await fetch('http://localhost:3000/api/shopping-carts/update', {
+        method: 'PUT',
+        body: JSON.stringify(shoppingCart),
+        headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
+            'Content-type': 'application/json; charset=UTF-8',
+        }
+    });
+    if (response.status == 500) {
+        alert("Cannot logout");
+    }
+    else {
+        sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('username');
+        sessionStorage.removeItem('my-token');
+        showAfterLogout();
+    }
+}
+
+function showAfterLogout() {
+    shoppingCart = [];
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('welcome-logout-content').style.display = 'none';
+    document.getElementById('welcome-content-div').style.display = 'block';
+}
 
 async function checkloign() {
-    const response = await fetch("http://localhost:3000/api/login",{
+    const response = await fetch("http://localhost:3000/api/login", {
         method: 'POST',
         body: JSON.stringify({
             username: document.getElementById("username").value,
@@ -17,21 +46,21 @@ async function checkloign() {
             'Content-Type': 'application/json',
         }
     });
-    
-    const result = await response.json()
-    if(result.status){
+
+    const result = await response.json();
+    // console.log(result)
+    if (result.message) {
         console.log(result.message);
         document.getElementById('err').innerText = result.message;
     }
-    else{
-        sessionStorage.setItem('userId',result.id);
+    else {
+        sessionStorage.setItem('userId', result.id);
         sessionStorage.setItem('username', result.username);
-        sessionStorage.setItem('my-token',result.accessToken);
+        sessionStorage.setItem('my-token', result.accessToken);
         showAfterLogin();
         fetchStock();
         fetchShoppingCartData(result.id);
     }
-    console.log('access ')
 }
 
 function showAfterLogin() {
@@ -57,12 +86,12 @@ async function fetchStock() {
     <th>Actions</th>
     </tr>`;
     const response = await fetch("http://localhost:3000/api/products",
-    {
-        headers: {
-            'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
-            'Content-type': 'application/json; charset=UTF-8',
-        }
-    });
+        {
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        });
     const stocklists = await response.json();
     console.log(stocklists);
     stocklists.forEach(stock =>
@@ -84,32 +113,36 @@ async function fetchStock() {
 async function fetchShoppingCartData(userId, id) {
     console.log(userId);
     const response = await fetch(`http://localhost:3000/api/shopping-carts/${userId}`,
-    {
-        headers: {
-            'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
-            'Content-type': 'application/json; charset=UTF-8',
-        }
-    });
+        {
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        });
     const shoppingcartlists = await response.json();
     console.log(shoppingcartlists);
     shoppingcartlists.forEach(prod => {
         let index = shoppingCart.findIndex(scProd => scProd.productId == prod.productId);
-        if(index > -1) {
-            console.log("shopping cart id", shoppingCart[index].id)
-            console.log("request id", id);
-           if(shoppingCart[index].productId == id) {
+        if (index > -1) {
+            if (shoppingCart[index].productId == id) {
                 shoppingCart[index].quantity++;
-           }
+            }
         } else {
             shoppingCart.push(prod);
         }
     });
-    // shoppingCart = shoppingcartlists;
     renderShoppingCartList();
 }
 
 function renderShoppingCartList() {
-    let html = `
+    if (shoppingCart.length == 0) {
+        let html = `
+            <caption>Product List</caption>
+            <p>There is no item in your shopping cart!</p>`;
+        document.getElementById("shoppingcart-list").innerHTML = html;
+        document.getElementById("placeOrderBtn").style.display = 'none';
+    } else {
+        let html = `
     <caption>Your Shopping Cart</caption>
     <tr>
     <th>Name</th>
@@ -117,55 +150,65 @@ function renderShoppingCartList() {
     <th>Total</th>
     <th>Quantity</th>
     </tr>`;
-    shoppingCart.forEach(list =>
-        html += `<tr>
+        let totalPrice = 0;
+        shoppingCart.forEach(list => {
+            totalPrice += list.price * list.quantity;
+            html += `<tr>
         <td>${list.name}</td>
         <td>${list.price}</td>
-        <td>${list.price}</td>
-        <td><button onclick='increase_by_one("${list.productId}");' class="increase-decrease-style">+</button>
+        <td><p id="total${list.price}">${list.price * list.quantity}</p></td>
+        <td><button onclick='increase_by_one("${list.productId}", "total${list.price}");' class="increase-decrease-style">+</button>
         <input id="${list.productId}" type="text" value="${list.quantity}" name="qty" class="myInput" readonly/>
-        <button onclick='decrease_by_one("${list.productId}");' class="increase-decrease-style">-</button></td>
-        </tr>`
-        
-       );
+        <button onclick='decrease_by_one("${list.productId}", "total${list.price}");' class="increase-decrease-style">-</button></td>
+        </tr>`;
+        });
+        html += `<tr>
+        <td id="totalPrice" class="right-align" colspan="4">Total: ${totalPrice}</td>
+    </tr>`;
+        document.getElementById("shoppingcart-list").innerHTML = html;
+        document.getElementById("placeOrderBtn").style.display = 'block';
+    }
 
-    document.getElementById("shoppingcart-list").innerHTML = html;
 }
 
-function increase_by_one(field) {
+function calculatePrice() {
+    let total = 0;
+    shoppingCart.forEach(prod => {
+        total += prod.price * prod.quantity;
+    });
+    document.getElementById("totalPrice").innerHTML = `Total: ${total}`;
+}
+
+function increase_by_one(field, total) {
     const nr = parseInt(document.getElementById(field).value);
-    // const update_qty = nr+1;
-    // sessionStorage.setItem('update_qty',update_qty);
     let index = shoppingCart.findIndex(prod => prod.productId == field);
-    shoppingCart[index].quantity = shoppingCart[index].quantity + 1; 
+    shoppingCart[index].quantity = shoppingCart[index].quantity + 1;
+    document.getElementById(total).innerHTML = shoppingCart[index].quantity * shoppingCart[index].price
     document.getElementById(field).value = shoppingCart[index].quantity;
-   }
-    
-function decrease_by_one(field) {
-    // const nr = parseInt(document.getElementById(field).value);
+    calculatePrice();
+}
+
+function decrease_by_one(field, total) {
     let index = shoppingCart.findIndex(prod => prod.productId == field);
     if ((parseInt(document.getElementById(field).value) - 1) > 0) {
-        // const update_qty = nr-1;
-        // sessionStorage.setItem('update_qty',update_qty);
-        shoppingCart[index].quantity = shoppingCart[index].quantity - 1; 
+        shoppingCart[index].quantity = shoppingCart[index].quantity - 1;
+        document.getElementById(total).innerHTML = shoppingCart[index].quantity * shoppingCart[index].price
         document.getElementById(field).value = shoppingCart[index].quantity;
-        
+        calculatePrice();
     }
-    if((parseInt(document.getElementById(field).value) - 1) == 0){
-        if(index > -1) {
+    if ((parseInt(document.getElementById(field).value) - 1) == 0) {
+        if (index > -1) {
             shoppingCart.splice(index, 1);
             delete_order(field);
             renderShoppingCartList();
         }
-
-        // delete_order(field);
     }
-} 
+}
 
 
 
-async function updatedOrderList(){
-    console.log("orderlist",shoppingCart);
+async function updatedOrderList() {
+    console.log("orderlist", shoppingCart);
     console.log(JSON.stringify(shoppingCart));
     const response = await fetch("http://localhost:3000/api/shopping-carts/placeOrder", {
         method: 'PUT',
@@ -175,10 +218,10 @@ async function updatedOrderList(){
             'Content-type': 'application/json; charset=UTF-8',
         }
     });
-    if(response.status == 500){
+    if (response.status == 500) {
         console.log("Error 500");
     }
-    else{
+    else {
         console.log("Success");
     }
     fetchStock();
@@ -186,16 +229,16 @@ async function updatedOrderList(){
 }
 
 
-async function addStock(stockId){
+async function addStock(stockId) {
     console.log(`stockID ${stockId}`);
     console.log(sessionStorage.userId);
-    
+
     await fetch("http://localhost:3000/api/shopping-carts/add", {
         method: 'POST',
         body: JSON.stringify({
-            productId:stockId,
-            userId:sessionStorage.userId
-            
+            productId: stockId,
+            userId: sessionStorage.userId
+
         }),
         headers: {
             'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
@@ -208,12 +251,12 @@ async function addStock(stockId){
 
 async function delete_order(productId) {
     const obj = {
-        "userId":sessionStorage.userId,
-        "productId":productId
+        "userId": sessionStorage.userId,
+        "productId": productId
     }
     console.log(obj);
     console.log(JSON.stringify(obj));
-    const response = await fetch("http://localhost:3000/api/shopping-carts/remove",{
+    const response = await fetch("http://localhost:3000/api/shopping-carts/remove", {
         method: 'DELETE',
         body: JSON.stringify(obj),
         headers: {
@@ -221,14 +264,10 @@ async function delete_order(productId) {
             'Content-type': 'application/json; charset=UTF-8',
         }
     });
-    if(response.status == 500){
+    if (response.status == 500) {
         console.log("Internal Server Error");
     }
-    else{
+    else {
         console.log("Success");
     }
-
-    // fetchShoppingCartData(sessionStorage.userId);
-    // console.log("update qty",sessionStorage.update_qty);
-    
 }
