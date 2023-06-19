@@ -16,8 +16,8 @@ exports.removeFromCart = (req, res, next) => {
 }
 
 exports.updateShoppingCart = (req, res, next) => {
-    const updateShoppingCartData = ShoppingCart.updateShoppingcart(req.body);
-    res.json(updateShoppingCartData);
+    ShoppingCart.updateShoppingcart(req.body);
+    res.status(204).end();
 }
 
 exports.placeOrder = (req, res, next) => {
