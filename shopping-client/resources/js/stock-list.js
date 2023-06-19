@@ -1,6 +1,6 @@
 window.onload = function () {
     document.getElementById("loginBtn").onclick = checkloign;
-    document.getElementById("orderlist").onclick = updatedOrderList;
+    document.getElementById("placeOrderBtn").onclick = updatedOrderList;
 }
 
 let shoppingCart = [];
@@ -20,7 +20,8 @@ async function checkloign() {
     
     const result = await response.json()
     if(result.status){
-        console.log("user is not match");
+        console.log(result.message);
+        document.getElementById('err').innerText = result.message;
     }
     else{
         sessionStorage.setItem('userId',result.id);
@@ -68,11 +69,11 @@ async function fetchStock() {
         html += `<tr>
         <td>${stock.name}</td>
         <td>${stock.price}</td>
-        <td><img src="http://localhost:3000/${stock.image}" width="30" height="30" ></td>
+        <td><img src="http://localhost:3000/${stock.image}" width="35" height="35" ></td>
         <td>${stock.stock}</td>
         <td>
-            <button onclick="addStock('${stock.id}')">
-                <img src="ttp://localhost:3000/images/cart.png" />
+            <button onclick="addStock('${stock.id}')" class="borderless-button">
+                <img src="http://localhost:3000/images/cart.png" width="35" height="35"/>
             </button>
         </td>
         </tr>`);
@@ -121,9 +122,9 @@ function renderShoppingCartList() {
         <td>${list.name}</td>
         <td>${list.price}</td>
         <td>${list.price}</td>
-        <td><button onclick='increase_by_one("${list.productId}");'>+</button>
-        <input id="${list.productId}" type="text" value="${list.quantity}" name="qty" />
-        <button onclick='decrease_by_one("${list.productId}");'>-</button></td>
+        <td><button onclick='increase_by_one("${list.productId}");' class="increase-decrease-style">+</button>
+        <input id="${list.productId}" type="text" value="${list.quantity}" name="qty" class="myInput" readonly/>
+        <button onclick='decrease_by_one("${list.productId}");' class="increase-decrease-style">-</button></td>
         </tr>`
         
        );

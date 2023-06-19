@@ -51,6 +51,9 @@
 
 #main-content {
   display: none;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-bottom: 5%;
 }
 
 #welcome-logout-content {
@@ -116,19 +119,82 @@ table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
+    position: relative;
   }
   
   td, th {
     border: 1px solid #dddddd;
-    text-align: left;
+    text-align: center;
     padding: 8px;
   }
+
+th {
+  background-color: #D92C49;
+  height: 30px;
+  color: white;
+}
   
-  tr:nth-child(even) {
+  /* tr:nth-child(even) {
     background-color: #dddddd;
-  }
+  } */
 
 caption{
-    font-size: 15px;
-    font-style: bold;
+    font-size: 20px;
+    font-weight: bold;
+    text-align:left;
+    padding-top: 35px;
+}
+
+.borderless-button {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+}
+
+.myInput {
+  width: 30px;
+  text-align: center;
+}
+
+.increase-decrease-style {
+  background-color: #D92C49;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  width: 20px;
+  height: 20px;
+}
+
+#placeOrderBtn {
+  background-color: #D92C49;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 10px 16px;
+  position: absolute;
+  bottom: auto;
+  right: 0;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.placeOrderDiv {
+  position: relative;
+  padding-top: 10px;
 }
