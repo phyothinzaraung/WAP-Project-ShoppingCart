@@ -21,6 +21,6 @@ exports.updateShoppingCart = (req, res, next) => {
 }
 
 exports.placeOrder = (req, res, next) => {
-    ShoppingCart.placeOrder(req.body);
-    res.status(204).end();
+    const products = ShoppingCart.placeOrder(req.body);
+    res.json(products);
 }

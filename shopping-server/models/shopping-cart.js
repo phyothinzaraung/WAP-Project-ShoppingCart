@@ -6,12 +6,13 @@ const shoppingCarts = data.shoppingCartDB;
 const products = data.productDB;
 
 module.exports = class ShoppingCart{
-    constructor(id, userId, productId, name, price, quantity){
+    constructor(id, userId, productId, name, price, image, quantity){
         this.id = id;
         this.userId = userId;
         this.productId = productId;
         this.name = name;
         this.price = price;
+        this.image = image;
         this.quantity = quantity;
     }
 
@@ -25,13 +26,13 @@ module.exports = class ShoppingCart{
         const index = shoppingCarts.findIndex(cart => cart.userId === userId && cart.productId === productId);
         if(index === -1){
             const product = products.find(product => product.id == productId);
-            console.log(product);
             const newShoppingCartData = {
                 id: uuid.v4(),
                 userId: userId,
                 productId: productId,
                 name: product.name,
                 price: product.price,
+                image: product.image,
                 quantity: 1
             };
             shoppingCarts.push(newShoppingCartData);
@@ -77,7 +78,8 @@ module.exports = class ShoppingCart{
                     products[index].stock = products[index].stock - scProd.quantity;
                 }
             }
-        )
+        );
+        shoppingCarts.length = 0;
         return products;
     }
 
