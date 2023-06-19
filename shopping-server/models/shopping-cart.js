@@ -4,6 +4,7 @@ const data = require("../data/data");
 
 const shoppingCarts = data.shoppingCartDB;
 const products = data.productDB;
+const users = data.userDB;
 
 module.exports = class ShoppingCart{
     constructor(id, userId, productId, name, price, quantity){
@@ -49,6 +50,18 @@ module.exports = class ShoppingCart{
         }
     }
 
+    static updateShoppingcart(shoppingCardArr){
+        shoppingCardArr.forEach(
+            scProd => {
+                let index = users.findIndex(user => user.id == scProd.userId);
+                if(index > -1){
+                    shoppingCardArr.push(scProd);
+                }
+            }
+        );
+        return shoppingCardArr;
+    }
+
     static placeOrder(shoppingCardRequestArr){
         shoppingCardRequestArr.forEach(
             scProd => {
@@ -63,4 +76,5 @@ module.exports = class ShoppingCart{
         )
         return products;
     }
+
 }

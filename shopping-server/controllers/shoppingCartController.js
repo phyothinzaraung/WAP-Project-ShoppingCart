@@ -15,6 +15,11 @@ exports.removeFromCart = (req, res, next) => {
     res.status(204).end();
 }
 
+exports.updateShoppingCart = (req, res, next) => {
+    const updateShoppingCartData = ShoppingCart.updateShoppingcart(req.body);
+    res.json(updateShoppingCartData);
+}
+
 exports.placeOrder = (req, res, next) => {
     ShoppingCart.placeOrder(req.body);
     res.status(204).end();
