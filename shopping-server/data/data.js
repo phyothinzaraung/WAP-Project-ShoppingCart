@@ -3,7 +3,7 @@ const uuid = require('uuid');
 const userDB = [
     { id:'bcc0251e-0d2e-11ee-be56-0242ac120002', username: 'phyo', password: 'phyo' },
     { id: 'd209fa3a-0d2e-11ee-be56-0242ac120002', username: 'tin', password: 'tin' },
-    { id: 'd209fa3a-0d2e-11ee-be56-0242ac120002', username: 'myo', password: 'myo' }
+    { id: '6a6b9956-0ed7-11ee-be56-0242ac120002', username: 'myo', password: 'myo' }
 ];
 
 const productDB = [
