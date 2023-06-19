@@ -78,7 +78,7 @@ async function fetchStock() {
     document.getElementById("stock-list").innerHTML = html;
 }
 
-async function fetchShoppingCartData(userId) {
+async function fetchShoppingCartData(userId, id) {
     console.log(userId);
     const response = await fetch(`http://localhost:3000/api/shopping-carts/${userId}`,
     {
@@ -89,7 +89,19 @@ async function fetchShoppingCartData(userId) {
     });
     const shoppingcartlists = await response.json();
     console.log(shoppingcartlists);
-    shoppingCart = shoppingcartlists;
+    shoppingcartlists.forEach(prod => {
+        let index = shoppingCart.findIndex(scProd => scProd.productId == prod.productId);
+        if(index > -1) {
+            console.log("shopping cart id", shoppingCart[index].id)
+            console.log("request id", id);
+           if(shoppingCart[index].productId == id) {
+                shoppingCart[index].quantity++;
+           }
+        } else {
+            shoppingCart.push(prod);
+        }
+    });
+    // shoppingCart = shoppingcartlists;
     renderShoppingCartList();
 }
 
@@ -139,6 +151,7 @@ function decrease_by_one(field) {
     if((parseInt(document.getElementById(field).value) - 1) == 0){
         if(index > -1) {
             shoppingCart.splice(index, 1);
+            delete_order(field);
             renderShoppingCartList();
         }
 
@@ -187,7 +200,7 @@ async function addStock(stockId){
         }
     });
     // fetchStock();
-    fetchShoppingCartData(sessionStorage.userId);
+    fetchShoppingCartData(sessionStorage.userId, stockId);
 }
 
 async function delete_order(productId) {
@@ -212,7 +225,7 @@ async function delete_order(productId) {
         console.log("Success");
     }
 
-    fetchShoppingCartData(sessionStorage.userId);
-    console.log("update qty",sessionStorage.update_qty);
+    // fetchShoppingCartData(sessionStorage.userId);
+    // console.log("update qty",sessionStorage.update_qty);
     
 }
