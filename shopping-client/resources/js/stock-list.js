@@ -163,7 +163,7 @@ function renderShoppingCartList() {
         </tr>`;
         });
         html += `<tr>
-        <td id="totalPrice" class="right-align" colspan="4">Total: ${totalPrice}</td>
+        <td id="totalPrice" class="right-align" colspan="4">Total: ${totalPrice.toFixed(2)}</td>
     </tr>`;
         document.getElementById("shoppingcart-list").innerHTML = html;
         document.getElementById("placeOrderBtn").style.display = 'block';
@@ -176,14 +176,14 @@ function calculatePrice() {
     shoppingCart.forEach(prod => {
         total += prod.price * prod.quantity;
     });
-    document.getElementById("totalPrice").innerHTML = `Total: ${total}`;
+    document.getElementById("totalPrice").innerHTML = `Total: ${total.toFixed(2)}`;
 }
 
 function increase_by_one(field, total) {
     const nr = parseInt(document.getElementById(field).value);
     let index = shoppingCart.findIndex(prod => prod.productId == field);
     shoppingCart[index].quantity = shoppingCart[index].quantity + 1;
-    document.getElementById(total).innerHTML = shoppingCart[index].quantity * shoppingCart[index].price
+    document.getElementById(total).innerHTML = (shoppingCart[index].quantity * shoppingCart[index].price).toFixed(2);
     document.getElementById(field).value = shoppingCart[index].quantity;
     calculatePrice();
 }
@@ -192,7 +192,7 @@ function decrease_by_one(field, total) {
     let index = shoppingCart.findIndex(prod => prod.productId == field);
     if ((parseInt(document.getElementById(field).value) - 1) > 0) {
         shoppingCart[index].quantity = shoppingCart[index].quantity - 1;
-        document.getElementById(total).innerHTML = shoppingCart[index].quantity * shoppingCart[index].price
+        document.getElementById(total).innerHTML = (shoppingCart[index].quantity * shoppingCart[index].price).toFixed(2);
         document.getElementById(field).value = shoppingCart[index].quantity;
         calculatePrice();
     }
