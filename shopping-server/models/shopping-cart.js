@@ -73,7 +73,7 @@ module.exports = class ShoppingCart{
                 if(index > -1) {
                     products[index].name = scProd.name;
                     products[index].price = scProd.price;
-                    products[index].image = "";
+                    products[index].image = scProd.image;
                     products[index].stock = products[index].stock - scProd.quantity;
                 }
             }
