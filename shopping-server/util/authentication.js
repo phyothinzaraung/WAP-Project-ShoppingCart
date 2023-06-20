@@ -6,10 +6,6 @@ function generateToken(payload){
     return jwt.sign(payload, jwtSecret, {expiresIn});
 }
 
-// function verifyToken(token){
-//     return jwt.verify(token, jwtSecret);
-// }
-
 function verifyToken(req, res, next) {
     const {authorization} = req.headers;
 

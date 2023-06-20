@@ -6,7 +6,6 @@ const shoppingCartRouter = require("./shoppingCartRouter");
 
 const router = express.Router();
 
-
 router.use("/products", productRouter);
 router.use("/login", userRouter);
 router.use("/shopping-carts", shoppingCartRouter);

@@ -19,15 +19,14 @@ app.use("/images", express.static('images'));
 
 app.use((req, res, next) => {
     res.status(404).send("Api is not supported");
-})
-
+});
 app.use((err, req, res, next) => {
     res.status(500).json({
         status: err.status,
         message: err.message
     });
-})
+});
 
 app.listen(3000, () => {
     console.log("Listening on 3000...");
-})
+});
