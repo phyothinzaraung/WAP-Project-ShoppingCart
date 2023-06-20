@@ -5,6 +5,7 @@ window.onload = function () {
 }
 
 let shoppingCart = [];
+let stockList = [];
 let productId = "";
 
 async function logout() {
@@ -94,6 +95,7 @@ async function fetchStock() {
         });
     const stocklists = await response.json();
     console.log(stocklists);
+    stockList = stocklists;
     stocklists.forEach(stock =>
         html += `<tr>
         <td>${stock.name}</td>
@@ -108,6 +110,39 @@ async function fetchStock() {
         </tr>`);
 
     document.getElementById("stock-list").innerHTML = html;
+}
+
+function compareQuantity(productId, stockId, isFromAddStock) {
+    if (isFromAddStock) {
+        let index = stockList.findIndex(prod => prod.id == stockId);
+        let scIndex = shoppingCart.findIndex(scProd => scProd.productId == stockId);
+        if(scIndex > -1) {
+            if(stockList[index].stock == 0 || (shoppingCart[scIndex].quantity >= stockList[index].stock)) {
+                alert(`${stockList[index].name} is already at the limit!`);
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            if(stockList[index].stock == 0) {
+                alert(`${stockList[index].name} is already at the limit!`);
+                return false;
+            } else {
+                return true;
+            }
+        }  
+    } else {
+        let index = shoppingCart.findIndex(scProd => scProd.productId == productId);
+        let stockIndex = stockList.findIndex(prod => prod.id == shoppingCart[index].productId);
+        if (stockIndex > -1) {
+            if (shoppingCart[index].quantity >= stockList[stockIndex].stock) {
+                alert(`${shoppingCart[index].name} is already at the limit!`);
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
 }
 
 async function fetchShoppingCartData(userId, id) {
@@ -180,12 +215,15 @@ function calculatePrice() {
 }
 
 function increase_by_one(field, total) {
-    const nr = parseInt(document.getElementById(field).value);
-    let index = shoppingCart.findIndex(prod => prod.productId == field);
-    shoppingCart[index].quantity = shoppingCart[index].quantity + 1;
-    document.getElementById(total).innerHTML = (shoppingCart[index].quantity * shoppingCart[index].price).toFixed(2);
-    document.getElementById(field).value = shoppingCart[index].quantity;
-    calculatePrice();
+    if (compareQuantity(field, null, false)) {
+        const nr = parseInt(document.getElementById(field).value);
+        let index = shoppingCart.findIndex(prod => prod.productId == field);
+        shoppingCart[index].quantity = shoppingCart[index].quantity + 1;
+        document.getElementById(total).innerHTML = (shoppingCart[index].quantity * shoppingCart[index].price).toFixed(2);
+        document.getElementById(field).value = shoppingCart[index].quantity;
+        calculatePrice();
+    }
+
 }
 
 function decrease_by_one(field, total) {
@@ -227,29 +265,27 @@ async function updatedOrderList() {
         shoppingCart = [];
         renderShoppingCartList();
     }
-    
+
 
 }
 
 
 async function addStock(stockId) {
-    console.log(`stockID ${stockId}`);
-    console.log(sessionStorage.userId);
+    if(compareQuantity(null, stockId, true)) {
+        await fetch("http://localhost:3000/api/shopping-carts/add", {
+                method: 'POST',
+                body: JSON.stringify({
+                    productId: stockId,
+                    userId: sessionStorage.userId
 
-    await fetch("http://localhost:3000/api/shopping-carts/add", {
-        method: 'POST',
-        body: JSON.stringify({
-            productId: stockId,
-            userId: sessionStorage.userId
-
-        }),
-        headers: {
-            'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
-            'Content-type': 'application/json; charset=UTF-8',
-        }
-    });
-    // fetchStock();
-    fetchShoppingCartData(sessionStorage.userId, stockId);
+                }),
+                headers: {
+                    'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
+                    'Content-type': 'application/json; charset=UTF-8',
+                }
+            });
+            fetchShoppingCartData(sessionStorage.userId, stockId);
+    }
 }
 
 async function delete_order(productId) {
