@@ -229,7 +229,7 @@ function decrease_by_one(productId, price) {
         document.getElementById(productId).value = shoppingCart[index].quantity;
         calculatePrice();
     }
-    if ((parseInt(document.getElementById(productId).value) - 1) == 0) {
+    else if ((parseInt(document.getElementById(productId).value) - 1) == 0) {
         if (index > -1) {
             shoppingCart.splice(index, 1);
             delete_order(productId);
