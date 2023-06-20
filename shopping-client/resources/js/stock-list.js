@@ -49,9 +49,7 @@ async function checkloign() {
     });
 
     const result = await response.json();
-    // console.log(result)
     if (result.message) {
-        console.log(result.message);
         document.getElementById('err').innerText = result.message;
     }
     else {
@@ -94,7 +92,6 @@ async function fetchStock() {
             }
         });
     const stocklists = await response.json();
-    console.log(stocklists);
     stockList = stocklists;
     stocklists.forEach(stock =>
         html += `<tr>
@@ -155,7 +152,6 @@ async function fetchShoppingCartData(userId, id) {
             }
         });
     const shoppingcartlists = await response.json();
-    console.log(shoppingcartlists);
     shoppingcartlists.forEach(prod => {
         let index = shoppingCart.findIndex(scProd => scProd.productId == prod.productId);
         if (index > -1) {
@@ -186,15 +182,15 @@ function renderShoppingCartList() {
     <th>Quantity</th>
     </tr>`;
         let totalPrice = 0;
-        shoppingCart.forEach(list => {
-            totalPrice += list.price * list.quantity;
+        shoppingCart.forEach(item => {
+            totalPrice += item.price * item.quantity;
             html += `<tr>
-        <td>${list.name}</td>
-        <td>${list.price}</td>
-        <td><p id="total${list.price}">${list.price * list.quantity}</p></td>
-        <td><button onclick='increase_by_one("${list.productId}", "total${list.price}");' class="increase-decrease-style">+</button>
-        <input id="${list.productId}" type="text" value="${list.quantity}" name="qty" class="myInput" readonly/>
-        <button onclick='decrease_by_one("${list.productId}", "total${list.price}");' class="increase-decrease-style">-</button></td>
+        <td>${item.name}</td>
+        <td>${item.price}</td>
+        <td><p id="total${item.price}">${item.price * item.quantity}</p></td>
+        <td><button onclick='increase_by_one("${item.productId}", "total${item.price}");' class="increase-decrease-style">+</button>
+        <input id="${item.productId}" type="text" value="${item.quantity}" name="qty" class="myInput" readonly/>
+        <button onclick='decrease_by_one("${item.productId}", "total${item.price}");' class="increase-decrease-style">-</button></td>
         </tr>`;
         });
         html += `<tr>
@@ -214,30 +210,29 @@ function calculatePrice() {
     document.getElementById("totalPrice").innerHTML = `Total: ${total.toFixed(2)}`;
 }
 
-function increase_by_one(field, total) {
-    if (compareQuantity(field, null, false)) {
-        const nr = parseInt(document.getElementById(field).value);
-        let index = shoppingCart.findIndex(prod => prod.productId == field);
+function increase_by_one(productId, price) {
+    if (compareQuantity(productId, null, false)) {
+        let index = shoppingCart.findIndex(prod => prod.productId == productId);
         shoppingCart[index].quantity = shoppingCart[index].quantity + 1;
-        document.getElementById(total).innerHTML = (shoppingCart[index].quantity * shoppingCart[index].price).toFixed(2);
-        document.getElementById(field).value = shoppingCart[index].quantity;
+        document.getElementById(price).innerHTML = (shoppingCart[index].quantity * shoppingCart[index].price).toFixed(2);
+        document.getElementById(productId).value = shoppingCart[index].quantity;
         calculatePrice();
     }
 
 }
 
-function decrease_by_one(field, total) {
-    let index = shoppingCart.findIndex(prod => prod.productId == field);
-    if ((parseInt(document.getElementById(field).value) - 1) > 0) {
+function decrease_by_one(productId, price) {
+    let index = shoppingCart.findIndex(prod => prod.productId == productId);
+    if ((parseInt(document.getElementById(productId).value) - 1) > 0) {
         shoppingCart[index].quantity = shoppingCart[index].quantity - 1;
-        document.getElementById(total).innerHTML = (shoppingCart[index].quantity * shoppingCart[index].price).toFixed(2);
-        document.getElementById(field).value = shoppingCart[index].quantity;
+        document.getElementById(price).innerHTML = (shoppingCart[index].quantity * shoppingCart[index].price).toFixed(2);
+        document.getElementById(productId).value = shoppingCart[index].quantity;
         calculatePrice();
     }
-    if ((parseInt(document.getElementById(field).value) - 1) == 0) {
+    if ((parseInt(document.getElementById(productId).value) - 1) == 0) {
         if (index > -1) {
             shoppingCart.splice(index, 1);
-            delete_order(field);
+            delete_order(productId);
             renderShoppingCartList();
         }
     }
@@ -246,8 +241,6 @@ function decrease_by_one(field, total) {
 
 
 async function updatedOrderList() {
-    console.log("orderlist", shoppingCart);
-    console.log(JSON.stringify(shoppingCart));
     const response = await fetch("http://localhost:3000/api/shopping-carts/placeOrder", {
         method: 'PUT',
         body: JSON.stringify(shoppingCart),
@@ -260,7 +253,6 @@ async function updatedOrderList() {
         console.log("Error 500");
     }
     else {
-        console.log("Success");
         fetchStock();
         shoppingCart = [];
         renderShoppingCartList();
@@ -277,7 +269,6 @@ async function addStock(stockId) {
                 body: JSON.stringify({
                     productId: stockId,
                     userId: sessionStorage.userId
-
                 }),
                 headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('my-token')}`,
