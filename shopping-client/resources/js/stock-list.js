@@ -172,7 +172,7 @@ async function fetchShoppingCartData(userId, id) {
 function renderShoppingCartList() {
     if (shoppingCart.length == 0) {
         let html = `
-            <caption>Product List</caption>
+            <caption>Your Shopping Cart</caption>
             <p>There is no item in your shopping cart!</p>`;
         document.getElementById("shoppingcart-list").innerHTML = html;
         document.getElementById("placeOrderBtn").style.display = 'none';

@@ -13,7 +13,7 @@ module.exports = class User{
         if(user){
             return user;
         }else{
-            throw new Error("Invalid user, username and password do not match");
+            throw new Error("username and password do not match");
         }
     }
 }

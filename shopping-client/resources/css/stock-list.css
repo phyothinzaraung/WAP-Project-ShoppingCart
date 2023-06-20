@@ -203,3 +203,7 @@ caption{
   text-align: right;
   padding-right: 14%;
 }
+
+caption{
+  margin-bottom: 8px;
+}
