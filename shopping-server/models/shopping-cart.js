@@ -77,9 +77,13 @@ module.exports = class ShoppingCart{
                     products[index].image = scProd.image;
                     products[index].stock = products[index].stock - scProd.quantity;
                 }
+
+                let userIndex = shoppingCarts.findIndex(item => item.userId === scProd.userId);
+                if(userIndex > -1){
+                    shoppingCarts.splice(userIndex, 1);
+                }
             }
         );
-        shoppingCarts.length = 0;
         return products;
     }
 
